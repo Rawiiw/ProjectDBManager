@@ -1,0 +1,60 @@
+﻿@model ProjectDBManager.Models.Data.Entities.ProjectEmployee
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>ProjectEmployee</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" id="createProjectEmployeeForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ProjectId" class="control-label"></label>
+                <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmployeeId" class="control-label"></label>
+                <input id="searchEmployee" class="form-control" />
+                <input type="hidden" id="selectedEmployeeId" name="EmployeeId" />
+                <div id="employeeList" class="list-group"></div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#searchEmployee').keyup(function () {
+                var query = $(this).val();
+                $.ajax({
+                    url: '/ProjectEmployees/SearchEmployee',
+                    type: 'GET',
+                    data: { query: query },
+                    success: function (response) {
+                        $('#employeeList').html(response);
+                    }
+                });
+            });
+
+            $(document).on('click', '.employee-item', function () {
+                var employeeId = $(this).data('employee-id');
+                var employeeName = $(this).data('employee-name');
+                $('#selectedEmployeeId').val(employeeId);
+                $('#searchEmployee').val(employeeName);
+                $('#employeeList').html('');
+            });
+        });
+    </script>
+}

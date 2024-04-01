@@ -1,0 +1,107 @@
+﻿﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<p><a asp-controller="Projects" asp-action="Create">Add project</a></p>
+
+<p><a asp-controller="Projects" asp-action="index">Projects list</a></p>
+
+<p><a asp-controller="Employees" asp-action="Create">Add employee</a></p>
+
+<p><a asp-controller="Employees" asp-action="index">Employees list </a></p>
+
+<p><a asp-controller="ProjectEmployees" asp-action="Create">Pick a director for project</a></p>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Uploader</title>
+    <style>
+        #drop-zone {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px auto;
+            width: 300px;
+            height: 150px;
+        }
+        #drop-zone.highlight {
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div id="drop-zone">
+        <p>Drag & Drop files here or click to select files</p>
+        <input type="file" id="file-input" multiple>
+    </div>
+
+    <script>
+        var dropZone = document.getElementById('drop-zone');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropZone.classList.add('highlight');
+        }
+
+        function unhighlight() {
+            dropZone.classList.remove('highlight');
+        }
+
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            var dt = e.dataTransfer;
+            var files = dt.files;
+
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            files = [...files];
+            files.forEach(uploadFile);
+        }
+
+        function uploadFile(file) {
+            var formData = new FormData();
+            formData.append('file', file);
+
+            //Sending files to the server with AJAX request
+            var xhr = new XMLHttpRequest();
+           // xhr.open('POST', '/diojfijfvijfvijf', true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log('File uploaded successfully:', file.name);
+                } else {
+                    console.error('Error uploading file:', file.name);
+                }
+            };
+            xhr.send(formData);
+        }
+
+        document.getElementById('file-input').addEventListener('change', function (e) {
+            var files = e.target.files;
+            handleFiles(files);
+        }, false);
+    </script>
+</body>
+</html>
